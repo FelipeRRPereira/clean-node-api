@@ -1,6 +1,6 @@
 import { Authentication } from '../../../domain/usecases/authentication'
 import { InvalidParamError, MissingParamError } from '../../errors'
-import { badRequest, serverError } from '../../helpers/http-helper'
+import { badRequest, serverError, unauthorized } from '../../helpers/http-helper'
 import { EmailValidator, HttpRequest } from '../signup/signup-protocols'
 import { LoginController } from './login'
 
@@ -72,16 +72,14 @@ describe('Login Controller', () => {
   test('Should call EmailValidator with correct email', async () => {
     const { sut, emailValidatorStub } = makeSut()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
-    const httpRequest = makeFakeRequest()
-    await sut.handle(httpRequest)
+    await sut.handle(makeFakeRequest())
     expect(isValidSpy).toHaveBeenLastCalledWith('any_email@mail.com')
   })
 
   test('Should return 400 if invalid email is provided', async () => {
     const { sut, emailValidatorStub } = makeSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
-    const httpRequest = makeFakeRequest()
-    const HttpResponse = await sut.handle(httpRequest)
+    const HttpResponse = await sut.handle(makeFakeRequest())
     expect(HttpResponse).toEqual(badRequest(new InvalidParamError('email')))
   })
 
@@ -90,16 +88,21 @@ describe('Login Controller', () => {
     jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
       throw new Error()
     })
-    const httpRequest = makeFakeRequest()
-    const HttpResponse = await sut.handle(httpRequest)
+    const HttpResponse = await sut.handle(makeFakeRequest())
     expect(HttpResponse).toEqual(serverError(new Error()))
   })
 
   test('Should call Authentication with correct values', async () => {
     const { sut, authenticationStub } = makeSut()
     const isValidSpy = jest.spyOn(authenticationStub, 'auth')
-    const httpRequest = makeFakeRequest()
-    await sut.handle(httpRequest)
+    await sut.handle(makeFakeRequest())
     expect(isValidSpy).toHaveBeenLastCalledWith('any_email@mail.com', 'any_password')
+  })
+
+  test('Should return 401 if invalid credentials are provided', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    const HttpResponse = await sut.handle(makeFakeRequest())
+    expect(HttpResponse).toEqual(unauthorized())
   })
 })

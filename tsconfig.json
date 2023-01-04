@@ -6,6 +6,7 @@
     "esModuleInterop": true,
     "allowJs": true,
     "strictNullChecks": false,
+    "sourceMap": true,
   },
   "include": [
     "src"

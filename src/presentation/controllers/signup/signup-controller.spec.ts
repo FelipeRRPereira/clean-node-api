@@ -20,7 +20,7 @@ const makeAddAccount = (): AddAccount => {
 
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {
-    validate (input: any): Error {
+    validate (input: any): any {
       return null
     }
   }
@@ -78,7 +78,7 @@ describe('SignUp Controller', () => {
       return await new Promise((_resolve, reject) => reject(new Error()))
     })
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(serverError(new ServerError(null)))
+    expect(httpResponse).toEqual(serverError(new ServerError('')))
   })
 
   test('Should return 200 if valid data is provided', async () => {

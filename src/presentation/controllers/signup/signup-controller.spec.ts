@@ -13,7 +13,7 @@ import { badRequest, forbidden, ok, serverError } from '../../helpers/http/http-
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add (account: AddAccountModel): Promise<AccountModel> {
+    async add (account: AddAccountModel): Promise<AccountModel | null> {
       const fakeAccount = {
         id: 'valid_id',
         name: 'valid_name',
@@ -96,7 +96,7 @@ describe('SignUp Controller', () => {
 
   test('Should return 403 if AddAccount returns null', async () => {
     const { sut, addAccountStub } = makeSut()
-    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(new Promise<null>(resolve => resolve(null)))
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
   })

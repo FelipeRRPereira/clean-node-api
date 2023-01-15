@@ -9,7 +9,7 @@ let accountCollection: Collection
 
 describe('Login Routes', () => {
   beforeAll(async () => {
-    return await MongoHelper.connect(env.mongoUrl)
+    await MongoHelper.connect(env.mongoUrl)
   })
 
   afterAll(async () => {

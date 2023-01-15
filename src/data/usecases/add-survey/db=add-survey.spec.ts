@@ -12,7 +12,7 @@ const makeFakeSurveyData = (): AddSurveyModel => ({
 const makeAddSurveyRepository = (): AddSurveyRepository => {
   class AddSurveyRepositoryStub implements AddSurveyRepository {
     async add (surveyData: AddSurveyModel): Promise<void> {
-      return new Promise(resolve => resolve())
+      return new Promise(resolve => { resolve() })
     }
   }
   return new AddSurveyRepositoryStub()
@@ -43,7 +43,7 @@ describe('DbAddSurvey UseCase', () => {
 
   test('Should be throw if AddSurveyRepository throws', async () => {
     const { sut, addSurveyRepositoryStub } = makeSut()
-    jest.spyOn(addSurveyRepositoryStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    jest.spyOn(addSurveyRepositoryStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => { reject(new Error()) }))
     const promise = sut.add(makeFakeSurveyData())
     await expect(promise).rejects.toThrow()
   })

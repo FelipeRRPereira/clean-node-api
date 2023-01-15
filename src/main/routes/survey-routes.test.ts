@@ -8,7 +8,7 @@ let surveyCollection: Collection
 
 describe('Survey Routes', () => {
   beforeAll(async () => {
-    return await MongoHelper.connect(env.mongoUrl)
+    await MongoHelper.connect(env.mongoUrl)
   })
 
   afterAll(async () => {

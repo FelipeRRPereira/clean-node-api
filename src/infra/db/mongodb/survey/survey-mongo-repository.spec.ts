@@ -5,7 +5,7 @@ import env from '../../../../main/config/env'
 
 let surveyCollection: Collection
 
-describe('', () => {
+describe('Survey Mongo Repository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(env.mongoUrl)
   })
@@ -32,7 +32,8 @@ describe('', () => {
         answer: 'any_answer'
       }, {
         answer: 'any_answer'
-      }]
+      }],
+      date: new Date()
     })
     const survey = await surveyCollection.findOne({ question: 'any_question' })
     expect(survey).toBeTruthy()
